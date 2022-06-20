@@ -579,7 +579,7 @@ gst_aravis_create (GstPushSrc * push_src, GstBuffer ** buffer)
 			gst_aravis->timestamp_offset = timestamp_ns;
 			gst_aravis->last_timestamp = timestamp_ns;
 		}
-		
+
 		GST_BUFFER_PTS (*buffer) = timestamp_ns - gst_aravis->timestamp_offset;
 		GST_BUFFER_DURATION (*buffer) = timestamp_ns - gst_aravis->last_timestamp;
 
