@@ -579,11 +579,16 @@ gst_aravis_create (GstPushSrc * push_src, GstBuffer ** buffer)
 			gst_aravis->timestamp_offset = timestamp_ns;
 			gst_aravis->last_timestamp = timestamp_ns;
 		}
-
 		GST_BUFFER_PTS (*buffer) = timestamp_ns - gst_aravis->timestamp_offset;
 		GST_BUFFER_DURATION (*buffer) = timestamp_ns - gst_aravis->last_timestamp;
 
 		gst_aravis->last_timestamp = timestamp_ns;
+	}
+	// IIS magic
+	// Set camera timestamp as buffer's DTS (decoding timestamp)
+	else {
+		GST_BUFFER_DTS (*buffer) = timestamp_ns - gst_aravis->timestamp_offset;
+		//printf("======================= Setting timestamp to %llu\n", GST_BUFFER_DTS (*buffer));
 	}
 
 	arv_stream_push_buffer (gst_aravis->stream, arv_buffer);
