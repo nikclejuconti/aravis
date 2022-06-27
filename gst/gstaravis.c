@@ -66,7 +66,8 @@ enum
   PROP_PACKET_RESEND,
   PROP_FEATURES,
   PROP_NUM_ARV_BUFFERS,
-  PROP_USB_MODE
+  PROP_USB_MODE,
+  PROP_IS_IIS
 };
 
 #define GST_TYPE_ARV_AUTO (gst_arv_auto_get_type())
@@ -676,6 +677,8 @@ gst_aravis_init (GstAravis *gst_aravis)
 
 	gst_aravis->all_caps = NULL;
 	gst_aravis->fixed_caps = NULL;
+
+	GST_WARNING_OBJECT (gst_aravis, "===== IIS: Using the modified IIS aravissrc element\n");	
 }
 
 static void
@@ -892,6 +895,9 @@ gst_aravis_get_property (GObject * object, guint prop_id, GValue * value,
 		case PROP_USB_MODE:
 			g_value_set_enum(value, gst_aravis->usb_mode);
 			break;
+		case PROP_IS_IIS:
+			g_value_set_boolean(value, TRUE);
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 			break;
@@ -1047,6 +1053,15 @@ gst_aravis_class_init (GstAravisClass * klass)
 			       "USB mode (synchronous/asynchronous)",
 			       GST_TYPE_ARV_USB_MODE, ARV_UV_USB_MODE_DEFAULT,
 			       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property
+		(gobject_class,
+		 PROP_IS_IIS,
+		 g_param_spec_boolean ("is-iis",
+				       "Is IIS customized version",
+				       "Return TRUE if this is the IIS customized version of aravissrc",
+				       TRUE,
+				       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
         GST_DEBUG_CATEGORY_INIT (aravis_debug, "aravissrc", 0, "Aravis interface");
 
